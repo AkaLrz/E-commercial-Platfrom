@@ -6,6 +6,7 @@ import com.skillup.apiPresentation.util.SkillResponseUtil;
 import com.skillup.application.promotion.PromotionApplication;
 import com.skillup.domain.promotion.PromotionDomain;
 import com.skillup.domain.promotion.PromotionService;
+import com.skillup.domain.stockCache.StockCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,9 @@ public class PromotionController {
 
     @Autowired
     PromotionApplication promotionApplication;
+
+    @Autowired
+    StockCacheService stockCacheService;
 
     @PostMapping
     public ResponseEntity<PromotionOutDto> createPromotion(@RequestBody PromotionInDto promotionInDto) {
@@ -49,13 +53,14 @@ public class PromotionController {
 
     @PostMapping("/lock/id/{id}")
     public ResponseEntity<Boolean> lockStock(@PathVariable("id") String id) {
+        //TODO: SUPPORT CACHE
         // 1. check promotion existing
-        PromotionDomain promotionDomain = promotionService.getPromotionById(id);
+        PromotionDomain promotionDomain = promotionApplication.getPromotionById(id);
         if (Objects.isNull(promotionDomain)) {
             return ResponseEntity.status(SkillResponseUtil.BAD_REQUEST).body(false);
         }
         // 2 boolean isLocked = promotionService.lockStock(id);
-        boolean isLocked = promotionService.lockStock(id);
+        boolean isLocked = stockCacheService.lockStock(id);
         return ResponseEntity.status(SkillResponseUtil.SUCCESS).body(isLocked);
     }
 
@@ -76,11 +81,11 @@ public class PromotionController {
     @PostMapping("/revert/id/{id}")
     public ResponseEntity<Boolean> revertStock(@PathVariable("id") String id) {
         // 1. check promotion
-        PromotionDomain promotionDomain = promotionService.getPromotionById(id);
+        PromotionDomain promotionDomain = promotionApplication.getPromotionById(id);
         if (Objects.isNull(promotionDomain)) {
             return ResponseEntity.status(SkillResponseUtil.BAD_REQUEST).body(false);
         }
-        boolean isReverted = promotionService.revertStock(id);
+        boolean isReverted = stockCacheService.revertStock(id);
         return ResponseEntity.status(SkillResponseUtil.SUCCESS).body(isReverted);
     }
 
