@@ -3,6 +3,7 @@ package com.skillup.apiPresentation;
 import com.skillup.apiPresentation.dto.in.PromotionInDto;
 import com.skillup.apiPresentation.dto.out.PromotionOutDto;
 import com.skillup.apiPresentation.util.SkillResponseUtil;
+import com.skillup.application.promotion.PromotionApplication;
 import com.skillup.domain.promotion.PromotionDomain;
 import com.skillup.domain.promotion.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class PromotionController {
     @Autowired
     PromotionService promotionService;
 
+    @Autowired
+    PromotionApplication promotionApplication;
+
     @PostMapping
     public ResponseEntity<PromotionOutDto> createPromotion(@RequestBody PromotionInDto promotionInDto) {
         PromotionDomain promotionDomainSaved = promotionService.createPromotion(toDomain(promotionInDto));
@@ -28,9 +32,7 @@ public class PromotionController {
 
     @GetMapping("/id/{id}")
     public ResponseEntity<PromotionOutDto> getPromotionById(@PathVariable("id") String id) {
-
-        // if hit promotion cache, stock may not accurate
-        PromotionDomain promotionDomain = promotionService.getPromotionById(id);
+        PromotionDomain promotionDomain = promotionApplication.getPromotionById(id);
         if (Objects.isNull(promotionDomain)) {
             return ResponseEntity.status(SkillResponseUtil.BAD_REQUEST).body(null);
         }
