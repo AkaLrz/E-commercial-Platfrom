@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class PromotionPreHeatApplication implements ApplicationRunner {
+public class  PromotionPreHeatApplication implements ApplicationRunner {
     @Autowired
     PromotionCacheService promotionCacheService;
     @Autowired

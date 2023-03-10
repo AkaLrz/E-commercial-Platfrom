@@ -16,10 +16,8 @@ public class PromotionApplication {
 
     @Autowired
     PromotionService promotionService;
-
     @Autowired
     PromotionCacheService promotionCacheService;
-
     @Autowired
     StockCacheService stockCacheService;
 

@@ -2,9 +2,11 @@ package com.skillup.infrastructure.redis;
 
 import com.skillup.domain.promotionCacheDomain.PromotionCacheDomain;
 import com.skillup.domain.promotionCacheDomain.PromotionCacheRepo;
+import com.skillup.domain.stockCache.StockCacheDomain;
 import com.skillup.domain.stockCache.StockCacheRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import java.util.Collections;
 import java.util.Objects;
 import com.alibaba.fastjson2.*;
 import org.springframework.stereotype.Repository;
@@ -41,16 +43,29 @@ public class RedisPromotionCacheRepo implements PromotionCacheRepo, StockCacheRe
 
     @Override
     public boolean revertStock(String id) {
-        return false;
+        // 1 select from available_stock = ? lock_stock = ?
+        try{
+            Long stock = redisTemplate.execute(redisRevertStockScript, Collections.singletonList(StockCacheDomain.createStockKey(id)));
+            if (stock > 0) {
+                return true;
+            } else {
+                // -1 means sold out, -2 promotion doesn't exist
+                return false;
+            }
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 
     @Override
     public Long getPromotionAvailableStock(String promotionId) {
-        return null;
+        String stockKey = StockCacheDomain.createStockKey(promotionId);
+        return JSON.parseObject(get(stockKey), Long.class);
     }
 
     @Override
     public void setPromotionAvailableStock(String promotionId, Long availableStock) {
+        String stockKey = StockCacheDomain.createStockKey(promotionId);
         set(promotionId, availableStock);
     }
 }
