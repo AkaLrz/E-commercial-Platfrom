@@ -31,7 +31,7 @@ public class RocketMqRepo implements MqRepo {
     }
 
     @Override
-    public void sendDelayMessage(String topic, String body, Integer delaySeconds) {
+    public void sendDelayMessage(String topic, String body) {
         Message message = new Message(topic, body.getBytes(StandardCharsets.UTF_8));
         message.setDelayTimeLevel(secondsToRocketMqLevel(delaySeconds));
         //2. send rocketmq message to related topic

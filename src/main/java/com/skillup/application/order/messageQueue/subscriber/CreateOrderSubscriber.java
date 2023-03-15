@@ -28,7 +28,7 @@ public class CreateOrderSubscriber implements RocketMQListener<MessageExt> {
     MqRepo mqRepo;
 
     @Value("${promotion.topic.lock-stock}")
-    Integer lockStockTopic;
+    String lockStockTopic;
 
     @Value(("${order.topic.pay-check}"))
     String payCheckTopic;
@@ -54,7 +54,7 @@ public class CreateOrderSubscriber implements RocketMQListener<MessageExt> {
         log.info("OrderApp: sent lock-stock message. OrderId is:" + orderDomain.getOrderNumber());
 
         //3. send "pay-check" message
-        mqRepo.sendDelayMessage("payCheckTopic", JSON.toJSONString(savedOrderDomain), lockStockTopic);
+        mqRepo.sendDelayMessage("payCheckTopic", JSON.toJSONString(savedOrderDomain));
         log.info("OrderApp: sent pay-check message. OrderId is: " + orderDomain.getOrderNumber());
     }
 }
