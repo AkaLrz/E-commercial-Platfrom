@@ -10,6 +10,7 @@ import com.skillup.domain.promotion.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -49,6 +50,7 @@ public class OrderApplication {
         mqRepo.sendMessageToTopic(createOrderTopic, JSON.toJSONString(orderDomain));
         return orderDomain;
     }
+    @Transactional
     public OrderDomain payBuyNowOrder(Long orderNumber, Integer existStatus, Integer expectStatus) {
         OrderDomain orderDomain = orderService.getOrderById(orderNumber);
 

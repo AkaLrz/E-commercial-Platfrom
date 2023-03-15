@@ -5,7 +5,7 @@ CREATE TABLE promotion_log(
     operation_name      VARCHAR(36)     NOT NULL,
     create_time         TIMESTAMP       NOT NULL,
     PRIMARY KEY(order_number, operation_name)
-) ENGINE = InnoDB  CHARSET = uft8bm4;
+) ENGINE = InnoDB  CHARSET = utf8;
 
 CREATE INDEX idx_user_id ON promotion_log(user_id);
 CREATE INDEX idx_order_number ON promotion_log(order_number);

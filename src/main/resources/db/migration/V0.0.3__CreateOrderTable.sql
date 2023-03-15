@@ -8,6 +8,6 @@ CREATE TABLE orders(
                        create_time             TIMESTAMP           NOT NULL,
                        pay_time                TIMESTAMP,
                        PRIMARY KEY(order_number)
-) ENGINE = InnoDB   CHARSET = utf8mb4;
+) ENGINE = InnoDB   CHARSET = utf8;
 
 CREATE INDEX idx_user_id ON orders(user_id);

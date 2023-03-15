@@ -2,6 +2,9 @@ package com.skillup.domain.promotion;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -27,14 +30,17 @@ public class PromotionService {
         return promotionRepository.getPromotionByPromotionStatus(status);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public boolean lockStock(String id) {
         return stockOperation.lockStock(id);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public boolean deductStock(String id) {
         return stockOperation.deductStock(id);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public boolean revertStock(String id) {
         return stockOperation.revertStock(id);
     }

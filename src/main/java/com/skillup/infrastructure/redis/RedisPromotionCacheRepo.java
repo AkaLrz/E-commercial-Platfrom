@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.util.Collections;
 import java.util.Objects;
 import com.alibaba.fastjson2.*;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,6 +17,12 @@ public class RedisPromotionCacheRepo implements PromotionCacheRepo, StockCacheRe
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    DefaultRedisScript<Long> redisLockStockScript;
+
+    @Autowired
+    DefaultRedisScript<Long> redisRevertStockScript;
 
     @Override
     public PromotionCacheDomain getPromotionById(String id) {
@@ -38,7 +45,17 @@ public class RedisPromotionCacheRepo implements PromotionCacheRepo, StockCacheRe
 
     @Override
     public boolean lockStock(String id) {
-        return false;
+        try{
+            Long stock = redisTemplate.execute(redisLockStockScript, Collections.singletonList(StockCacheDomain.createStockKey(id)));
+            if (stock >= 0) {
+                return true;
+            } else {
+                // -1 means sold out, -2 promotion doesn't exist
+                return false;
+            }
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 
     @Override

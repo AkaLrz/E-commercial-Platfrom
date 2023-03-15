@@ -5,7 +5,7 @@ CREATE TABLE commodity (
     price                   INTEGER             NOT NULL,
     image_url               VARCHAR(64),
     PRIMARY KEY(commodity_id)
-) ENGINE = InnoDB   CHARSET = utf8mb4;
+) ENGINE = InnoDB   CHARSET = utf8;
 
 CREATE INDEX uni_commodity_name ON  commodity(commodity_name);
 

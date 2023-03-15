@@ -13,13 +13,15 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 @Slf4j
 @Component
 @RocketMQMessageListener(topic = "${order.topic.pay-check}", consumerGroup = "${order.topic.pay-check-group}")
-public class PayCheckSub implements RocketMQListener<MessageExt> {
+public class PayCheckSubscriber implements RocketMQListener<MessageExt> {
     @Autowired
     OrderService orderService;
 
@@ -33,6 +35,7 @@ public class PayCheckSub implements RocketMQListener<MessageExt> {
     StockCacheService stockCacheService;
 
     @Override
+    @Transactional
     public void onMessage(MessageExt messageExt) {
         //parse to String, if needed, parse to Object by FastJson2
         String messageBody = new String(messageExt.getBody(), StandardCharsets.UTF_8);
@@ -58,11 +61,13 @@ public class PayCheckSub implements RocketMQListener<MessageExt> {
                 throw new RuntimeException("Revert cache available stock failed");
             }
             //3. database revert stock(available_stock, lock_Stock)
-            mqRepo.sendMessageToTopic("String revertStockTopic;\n", JSON.toJSONString(currentOrder));
+            mqRepo.sendMessageToTopic(revertStockTopic, JSON.toJSONString(currentOrder));
             log.info("OrderApp: sent revert-stock message");
         }
-        else {
+        else if (currentOrder.getOrderStatus().equals(OrderStatus.PAYED)) {
             log.info("OrderId: " + orderDomain.getOrderNumber() + " is already payed");
+        } else if (currentOrder.getOrderStatus().equals(OrderStatus.OVERTIME)) {
+            log.info("OrderId: " + orderDomain.getOrderNumber() + " is already overtime");
         }
     }
 }

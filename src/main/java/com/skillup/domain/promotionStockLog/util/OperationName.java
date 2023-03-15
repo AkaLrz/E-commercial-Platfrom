@@ -1,10 +1,10 @@
 package com.skillup.domain.promotionStockLog.util;
 
-public enum StockOperation {
+public enum OperationName {
 
-    LOCK_STOCK;
+    LOCK_STOCK,
 
-    DEDUCT_STOCK;
+    DEDUCT_STOCK,
 
     REVERT_STOCK;
 }
