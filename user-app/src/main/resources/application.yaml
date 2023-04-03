@@ -1,0 +1,44 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: user-app  # consul注册中心相关配置
+    cloud:
+      consul:
+        host: localhost
+        port: 8500
+        discovery: # 是否注册（默认为true）
+          register: true
+          # 服务名称
+          service-name: ${spring.application.name}
+          # 展示实例的ip（默认是false）
+          prefer-ip-address: true
+          # 实例id名称（默认是${spring.application.name}:comma,separated,profiles:${server.port}）
+          # instance-id: ${spring.application.name}
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/user-app?serverTimezone=GMT&useUnicode=true&characterEncoding=utf8&useSSL=true
+    username: root
+    password: rootroot
+  flyway:
+    baseline-on-migrate: true
+    enabled: true
+  # Redis数据库索引（默认为0)
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    # password
+    #客户端超时时间
+    timeout: 0
+    pool:
+      max-active: 200
+      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+      max-wait: -1
+      # 连接池中的最大空闲连接
+      max-idle: 8
+      # 连接池中的最小空闲连接
+      min-idle: 0
+    #spring-session 使用
+    session.store-type: none
