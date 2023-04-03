@@ -7,8 +7,8 @@ import com.skillup.infrastructure.jooq.tables.records.UserRecord;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.util.Optional;
+
 
 @Repository
 public class JooqUserRepo implements UserRepository {
