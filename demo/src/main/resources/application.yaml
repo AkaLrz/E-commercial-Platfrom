@@ -1,9 +1,9 @@
 server:
-  port: 8030
+  port: 8090
 
 spring:
   application:
-    name: promotion-app  # consul注册中心相关配置
+    name: skillup-e-commerce  # consul注册中心相关配置
     cloud:
       consul:
         host: localhost
@@ -18,7 +18,7 @@ spring:
           # instance-id: ${spring.application.name}
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/promotion-app?serverTimezone=GMT&useUnicode=true&characterEncoding=utf8&useSSL=true
+    url: jdbc:mysql://localhost:3306/skillup?serverTimezone=GMT&useUnicode=true&characterEncoding=utf8&useSSL=true
     username: root
     password: rootroot
   flyway:

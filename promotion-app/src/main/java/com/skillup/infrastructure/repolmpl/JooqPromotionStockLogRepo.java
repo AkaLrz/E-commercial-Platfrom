@@ -3,7 +3,6 @@ package com.skillup.infrastructure.repolmpl;
 import com.skillup.domain.promotionStockLog.util.PromotionStockLogDomain;
 import com.skillup.domain.promotionStockLog.util.PromotionStockLogRepo;
 import com.skillup.domain.promotionStockLog.util.OperationName;
-import com.skillup.infrastructure.jooq.tables.records.PromotionRecord;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

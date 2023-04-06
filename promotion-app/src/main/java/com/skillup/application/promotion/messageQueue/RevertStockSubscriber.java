@@ -1,8 +1,6 @@
 package com.skillup.application.promotion.messageQueue;
 
 import com.alibaba.fastjson2.JSON;
-import com.skillup.domain.order.OrderDomain;
-import com.skillup.domain.order.util.OrderStatus;
 import com.skillup.domain.promotion.PromotionService;
 import com.skillup.domain.promotionStockLog.util.OperationName;
 import com.skillup.domain.promotionStockLog.util.PromotionStockLogDomain;
