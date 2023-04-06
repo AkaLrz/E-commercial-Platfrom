@@ -11,6 +11,8 @@
     <modules>
         <module>template</module>
         <module>user-app</module>
+        <module>commodity-app</module>
+        <module>promotion-app</module>
     </modules>
 
     <parent>
