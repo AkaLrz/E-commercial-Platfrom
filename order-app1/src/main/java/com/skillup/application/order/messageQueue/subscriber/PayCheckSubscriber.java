@@ -2,19 +2,20 @@ package com.skillup.application.order.messageQueue.subscriber;
 
 import com.alibaba.fastjson2.JSON;
 import com.skillup.application.order.messageQueue.MqRepo;
+import com.skillup.application.promotion.PromotionCacheApplication;
 import com.skillup.domain.order.OrderDomain;
 import com.skillup.domain.order.OrderService;
 import com.skillup.domain.order.util.OrderStatus;
-import com.skillup.domain.stockCache.StockCacheService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
@@ -32,9 +33,10 @@ public class PayCheckSubscriber implements RocketMQListener<MessageExt> {
     String revertStockTopic;
 
     @Autowired
-    StockCacheService stockCacheService;
+    PromotionCacheApplication promotionCacheApplication;
 
     @Override
+    //Transaction for payment and paycheck
     @Transactional
     public void onMessage(MessageExt messageExt) {
         //parse to String, if needed, parse to Object by FastJson2
@@ -56,12 +58,21 @@ public class PayCheckSubscriber implements RocketMQListener<MessageExt> {
             orderService.updateOrder(currentOrder);
 
             //2. revert cache available_stock
-            boolean isReverted = stockCacheService.revertStock(currentOrder.getPromotionId());
+            ResponseEntity<Boolean> booleanResponseEntity = promotionCacheApplication.revertStock(currentOrder.getPromotionId());
+            if (booleanResponseEntity.getStatusCode().equals(HttpStatus.BAD_REQUEST) || !booleanResponseEntity.hasBody() || Objects.isNull(booleanResponseEntity.getBody())){
+                log.error("Promotion is not existing");
+            }
+            boolean isReverted = Boolean.TRUE.equals(booleanResponseEntity.getBody());
             if (!isReverted) {
-                throw new RuntimeException("Revert cache available stock failed");
+                log.error("Revert cache available stock failed!");
             }
             //3. database revert stock(available_stock, lock_Stock)
-            mqRepo.sendMessageToTopic(revertStockTopic, JSON.toJSONString(currentOrder));
+            try{
+                mqRepo.sendMessageToTopic(revertStockTopic, JSON.toJSONString(currentOrder));
+
+            } catch (Exception e) {
+                log.error("Revert cache available stock failed!");
+            }
             log.info("OrderApp: sent revert-stock message");
         }
         else if (currentOrder.getOrderStatus().equals(OrderStatus.PAYED)) {

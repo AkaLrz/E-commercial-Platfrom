@@ -1,9 +1,9 @@
 server:
-  port: 8090
+  port: 8040
 
 spring:
   application:
-    name: skillup-e-commerce  # consul注册中心相关配置
+    name: order-app1  # consul注册中心相关配置
     cloud:
       consul:
         host: localhost
@@ -18,28 +18,12 @@ spring:
           # instance-id: ${spring.application.name}
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/skillup?serverTimezone=GMT&useUnicode=true&characterEncoding=utf8&useSSL=true
+    url: jdbc:mysql://localhost:3306/order-app1?serverTimezone=GMT&useUnicode=true&characterEncoding=utf8&useSSL=true
     username: root
     password: rootroot
   flyway:
     baseline-on-migrate: true
     enabled: true
-  # Redis数据库索引（默认为0)
-  redis:
-    database: 0
-    host: localhost
-    port: 6379
-    # password
-    #客户端超时时间
-    timeout: 0
-    pool:
-      max-active: 200
-      # 连接池最大阻塞等待时间（使用负值表示没有限制）
-      max-wait: -1
-      # 连接池中的最大空闲连接
-      max-idle: 8
-      # 连接池中的最小空闲连接
-      min-idle: 0
     #spring-session 使用
     session.store-type: none
 
@@ -66,6 +50,15 @@ rocketmq:
     listeners: # 配置某个消费分组，是否监听指定 Topic 。结构为 Map<消费者分组, <Topic, Boolean>> 。默认情况下，不配置表示监听。
       test-consumer-group:
         topic1: false # 关闭 test-consumer-group 对 topic1 的监听消费
+order:
+  data-center: 1
+  machine-num: 1
+  topic:
+    create-order: create-order-1
+    create-order-group: CO-G-1
+    pay-check: pay-check-1
+    pay-check-group: PC-G-1
+  delay-time: 60
 promotion:
   stock-strategy: optimistic # [oversell, sync, optimistic]
   topic:
@@ -75,12 +68,3 @@ promotion:
     revert-stock-group: RS-G
     deduct-stock: deduct-stock
     deduct-stock-group: DS-G
-order:
-  data-center: 1
-  machine-num: 1
-  topic:
-    create-order: create-order
-    create-order-group: CO-G
-    pay-check: pay-check
-    pay-check-group: PC-G
-  delay-time: 60

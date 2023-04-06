@@ -12,6 +12,7 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ public class CreateOrderSubscriber implements RocketMQListener<MessageExt> {
     String payCheckTopic;
 
     @Override
+    @Transactional
     public void onMessage(MessageExt messageExt) {
         //parse to String, if needed, parse to Object by FastJson2
         String messageBody = new String(messageExt.getBody(), StandardCharsets.UTF_8);
@@ -49,6 +51,9 @@ public class CreateOrderSubscriber implements RocketMQListener<MessageExt> {
         orderDomain.setCreateTime(LocalDateTime.now());
         OrderDomain savedOrderDomain = orderService.createOrder(orderDomain);
 
+        /**
+         * step 2 and step 3 can send single message, and have 2 separate listeners.
+         */
         //2. send "lock-stock" message
         mqRepo.sendMessageToTopic("lockStockTopic", JSON.toJSONString(orderDomain));
         log.info("OrderApp: sent lock-stock message. OrderId is:" + orderDomain.getOrderNumber());

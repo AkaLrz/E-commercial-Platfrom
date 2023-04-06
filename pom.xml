@@ -13,6 +13,7 @@
         <module>user-app</module>
         <module>commodity-app</module>
         <module>promotion-app</module>
+        <module>order-app1</module>
     </modules>
 
     <parent>
@@ -101,6 +102,13 @@
                         <artifactId>spring-cloud-starter-gateway</artifactId>
                         <version>3.1.2</version>
                     </dependency>
+
+            <!--open feign-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>3.1.4</version>
+            </dependency>
 
             <!-- test tools -->
             <dependency>
