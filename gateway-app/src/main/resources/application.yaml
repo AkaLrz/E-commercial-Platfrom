@@ -1,0 +1,69 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: gateway-app  # consul注册中心相关配置
+    cloud:
+      consul:
+        host: localhost
+        port: 8500
+        discovery: # 是否注册（默认为true）
+          register: true
+          # 服务名称
+          service-name: ${spring.application.name}
+          # 展示实例的ip（默认是false）
+          prefer-ip-address: true
+          # 实例id名称（默认是${spring.application.name}:comma,separated,profiles:${server.port}）
+          # instance-id: ${spring.application.name}
+      gateway:
+        discovery:
+          locator:
+            enabled: true #开启动态路由
+            lower-case-service-id: true
+        globalcors:
+          add-to-simple-url-handler-mapping: true
+          cors-configurations:
+            '[/**]' :
+              allowedOrigins: "http://localhost:8040"
+              allowedHeaders: "*"
+              allowedMethods: "*"
+              exposedHeaders: "*"
+              allowCredentials: true
+              maxAge: 86400
+        routes:
+          - id: account-route
+            #url: http://localhost:8008
+            #url: lb:// conusl server_name
+            uri: lb://user-app
+            predicates:
+              - Path=/account/**
+            filters:
+              - StripPrefix=0
+          - id: commodity-route
+            #url: http://localhost:8008
+            #url: lb:// conusl server_name
+            uri: lb://commodity-app
+            predicates:
+              - Path=/commodity/**
+            filters:
+              - StripPrefix=0
+          - id:  system-route
+            uri: lb://user-app
+            predicates:
+              - Path=/system/**
+            filters:
+              - StripPrefix=0
+          - id: promotion-route
+            uri: lb://promotion-app
+            predicates:
+              - Path=/promotion/**
+            filters:
+              - StripPrefix=0
+          - id: order-route1
+            uri: lb://order-app1
+            predicates:
+              - Path=/order/**
+              #- Header=marl, 1
+            filters:
+              - StripPrefix=0

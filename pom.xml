@@ -14,6 +14,8 @@
         <module>commodity-app</module>
         <module>promotion-app</module>
         <module>order-app1</module>
+        <module>frontend-app</module>
+        <module>gateway-app</module>
     </modules>
 
     <parent>
@@ -96,12 +98,6 @@
                 <artifactId>spring-boot-starter-actuator</artifactId>
                 <version>2.7.3</version>
             </dependency>
-
-                    <dependency>
-                        <groupId>org.springframework.cloud</groupId>
-                        <artifactId>spring-cloud-starter-gateway</artifactId>
-                        <version>3.1.2</version>
-                    </dependency>
 
             <!--open feign-->
             <dependency>
