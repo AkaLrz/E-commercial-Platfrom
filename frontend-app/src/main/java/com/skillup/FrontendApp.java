@@ -6,8 +6,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-public class FrontednApp {
+public class FrontendApp {
     public static void main(String[] args) {
-        SpringApplication.run(FrontednApp.class, args);
+        SpringApplication.run(FrontendApp.class, args);
     }
 }

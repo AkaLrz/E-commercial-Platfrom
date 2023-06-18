@@ -85,7 +85,7 @@
                 <version>2.2.2</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-consul-discovery -->
+            <!-- https://jjsmvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-consul-discovery -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-consul-discovery</artifactId>

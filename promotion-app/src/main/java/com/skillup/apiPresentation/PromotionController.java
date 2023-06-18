@@ -51,8 +51,8 @@ public class PromotionController {
         );
     }
 
-    @PostMapping("/lock/id/{id}")
-    public ResponseEntity<Boolean> lockStock(@PathVariable("id") String id) {
+    @PostMapping("/lock/id/{id}/order/id/{orderId}")
+    public ResponseEntity<Boolean> lockStock(@PathVariable("id") String id, @PathVariable("orderId") Long orderId) {
         //TODO: SUPPORT CACHE
         // 1. check promotion existing
         PromotionDomain promotionDomain = promotionApplication.getPromotionById(id);
@@ -78,8 +78,8 @@ public class PromotionController {
     /**
      * Revert Available Stock in Cache
      */
-    @PostMapping("/revert/id/{id}")
-    public ResponseEntity<Boolean> revertStock(@PathVariable("id") String id) {
+    @PostMapping("/revert/id/{id}/order/id/{orderId}")
+    public ResponseEntity<Boolean> revertStock(@PathVariable("id") String id, @PathVariable("orderId") Long orderId) {
         // 1. check promotion
         PromotionDomain promotionDomain = promotionApplication.getPromotionById(id);
         if (Objects.isNull(promotionDomain)) {
